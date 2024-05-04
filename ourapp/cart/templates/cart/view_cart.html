@@ -2,6 +2,12 @@
 {% block title %}Cart{% endblock %}
 
 {% block content %}
+<style>
+    /* Address Form CSS */
+    #editAddressBtn:checked ~ #editAddressForm {
+        display: block;
+    }
+</style>
 <!-- Main Content -->
 <div class="container mx-auto py-8 px-4">
     {% if cart %}
@@ -9,22 +15,20 @@
     <!-- Cart Items -->
     <div class="cart-items mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">    
         {% for cart_item in cart %}
-        {%set product=cart_item.product%}
-        {%set quantity=cart_item.quantity%}
-        <div id="product_1" class="cart-item bg-white rounded-lg shadow-md p-6 flex items-center">
-            <img src="{{product.image_url}}" alt="Product Image" class="w-32 h-32 object-cover rounded mr-6">
+        {% set product = cart_item.product %}
+        {% set quantity = cart_item.quantity %}
+        <div id="product_{{ product.id }}" class="cart-item bg-white rounded-lg shadow-md p-6 flex items-center">
+            <img src="{{ product.image_url }}" alt="Product Image" class="w-32 h-32 object-cover rounded mr-6">
             <div>
-                <h2 class="text-xl font-semibold mb-2">{{product.name}}</h2>
-                <p class="text-gray-600 mb-4">{{product.small_description}}</p>
+                <h2 class="text-xl font-semibold mb-2">{{ product.name }}</h2>
+                <p class="text-gray-600 mb-4">₹ {{ product.price }}</p>
                 <div class="flex items-center">
                     <div class="quantity flex items-center">
-                        <a href="{{url_for('cart.decrement',id=product.id)}}" class="px-3 py-1 rounded bg-gray-200 inline-block">-</a>
-                        <span id="quantity_1" class="px-3 py-1 bg-gray-200">{{quantity}}</span>
-                        <a href="{{url_for('cart.increment',id=product.id)}}" class="px-3 py-1 rounded bg-gray-200 inline-block">+</a>
-
+                        <a href="{{ url_for('cart.decrement', id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">-</a>
+                        <span id="quantity_{{ product.id }}" class="px-3 py-1 bg-gray-200">{{ quantity }}</span>
+                        <a href="{{ url_for('cart.increment', id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">+</a>
                     </div>
-                    <a href="{{url_for('cart.remove',id=product.id)}}" class="text-red-500 font-semibold ml-4">Remove</a>
-
+                    <a href="{{ url_for('cart.remove', id=product.id) }}" class="text-red-500 font-semibold ml-4">Remove</a>
                 </div>
             </div>
         </div>
@@ -34,17 +38,24 @@
     <!-- Address Section -->
     <div class="address mt-8">
         <h2 class="text-xl font-semibold mb-4">Address</h2>
-        <p id="address" class="text-gray-600 mb-2">123 Main St, City, Country</p>
-        <button id="editAddressBtn" class="text-blue-500">Edit</button>
-        <div id="editAddressForm" style="display: none;">
+        <p id="address" class="text-gray-600 mb-2">{{ current_user.address }}</p>
+        <label for="editAddressBtn" class="text-blue-500 cursor-pointer">Edit</label>
+        <input type="checkbox" id="editAddressBtn" class="hidden">
+        <div id="editAddressForm" class="edit-address-form hidden">
             <!-- Edit Address Form -->
-            <!-- Form Inputs -->
-            <input id="newAddress" type="text" class="border rounded-md p-2 mt-2 w-full"
-                placeholder="Enter New Address">
-            <!-- Submit Button -->
-            <button id="submitAddressBtn"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Submit</button>
+            <form action="{{ url_for('user.update_address') }}" method="POST">
+                <!-- Form Inputs -->
+                <textarea name="newAddress" id="newAddress" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter New Address"></textarea>
+                <!-- Submit Button -->
+                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Submit</button>
+            </form>
         </div>
+        
+    </div>
+    <!-- Total amount to Pay -->
+    <div class="paymentsec mt-8">
+        <h2 class="text-xl font-semibold mb-4">Total amount to Pay</h2>
+        <h3 class="text-gray-600">₹ {{ cart_total }}</h3>
     </div>
     <!-- Proceed Button -->
     <div class="proceed-btn mt-8 flex justify-end">

@@ -33,7 +33,7 @@ def view_cart():
     cart_total = 0
     for cartItem in cart:
         cart_total += (cartItem.product.price * cartItem.quantity)
-    return render_template("cart/cart.html",cart=cart, cart_total=cart_total)
+    return render_template("cart/view_cart.html",cart=cart, cart_total=cart_total)
 
 @cart_bp.route('/increment/<int:id>')
 @login_required
