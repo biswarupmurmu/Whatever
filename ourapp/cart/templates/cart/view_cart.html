@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mx-auto py-8 px-4">
+    {% if cart %}
+    <h1 class="text-xl font-bold">Welcome to Cart</h1>
+    <!-- Cart Items -->
+    <div class="cart-items mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">    
+        {% for cart_item in cart %}
+        {%set product=cart_item.product%}
+        {%set quantity=cart_item.quantity%}
+        <div id="product_1" class="cart-item bg-white rounded-lg shadow-md p-6 flex items-center">
+            <img src="{{product.image_url}}" alt="Product Image" class="w-32 h-32 object-cover rounded mr-6">
+            <div>
+                <h2 class="text-xl font-semibold mb-2">{{product.name}}</h2>
+                <p class="text-gray-600 mb-4">{{product.small_description}}</p>
+                <div class="flex items-center">
+                    <div class="quantity flex items-center">
+                        <a href="{{url_for('cart.decrement',id=product.id)}}" class="px-3 py-1 rounded bg-gray-200 inline-block">-</a>
+                        <span id="quantity_1" class="px-3 py-1 bg-gray-200">{{quantity}}</span>
+                        <a href="{{url_for('cart.increment',id=product.id)}}" class="px-3 py-1 rounded bg-gray-200 inline-block">+</a>
+
+                    </div>
+                    <a href="{{url_for('cart.remove',id=product.id)}}" class="text-red-500 font-semibold ml-4">Remove</a>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Address -->
+    <!-- Address Section -->
+    <div class="address mt-8">
+        <h2 class="text-xl font-semibold mb-4">Address</h2>
+        <p id="address" class="text-gray-600 mb-2">123 Main St, City, Country</p>
+        <button id="editAddressBtn" class="text-blue-500">Edit</button>
+        <div id="editAddressForm" style="display: none;">
+            <!-- Edit Address Form -->
+            <!-- Form Inputs -->
+            <input id="newAddress" type="text" class="border rounded-md p-2 mt-2 w-full"
+                placeholder="Enter New Address">
+            <!-- Submit Button -->
+            <button id="submitAddressBtn"
+                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Submit</button>
+        </div>
+    </div>
+    <!-- Proceed Button -->
+    <div class="proceed-btn mt-8 flex justify-end">
+        <a href="{{url_for('payment.payment')}}" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded">Proceed to Payment</a>
+    </div>
+    {% else %}
+    <h1 class="text-xl font-bold">No Items Added to Cart</h1>
+    <h1 class="text-xl font-bold">Please <a href="{{url_for('product_bp.view_all_products')}}">CLICK HERE</a> to Shop. </h1>
+    {% endif %}
+</div>
+{% endblock %}

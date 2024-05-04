@@ -1,0 +1,48 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+}
+
+/* Navigation bar */
+.nav {
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav .left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav .left img{
+    width: 2rem;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.nav .right a {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    text-decoration: none;
+    color: rgb(0, 70, 150);
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.nav .right a:hover {
+    background-color: rgb(238, 238, 238);
+}
+
+.nav .right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav .right strong {
+    color: rgb(0, 150, 80);
+    padding-right: 2rem;
+}
+/* Navigation bar END */

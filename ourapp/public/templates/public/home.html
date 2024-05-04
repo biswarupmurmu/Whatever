@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css"
+    />
+
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #fff;
+        color: #000;
+        margin: 0;
+        padding: 0;
+      }
+
+      header,
+      footer {
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      main {
+        padding: 20px;
+        background: #fff;
+      }
+      .section {
+        background-color: #fff;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      h2 {
+        color: #000;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .products-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .product-item {
+        border: 1px solid #000;
+        border-radius: 10px;
+        width: 200px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background: #fff;
+        text-align: center;
+      }
+
+      .product-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+
+      .carousel .slick-slide img {
+        width: 400px;
+        height: 400px;
+        object-fit: cover;
+        display: block;
+        border-radius: 10px;
+      }
+
+      .carousel {
+        line-height: 0;
+      }
+
+      .carousel .slick-slide {
+        margin: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .slick-track {
+        align-items: center;
+      }
+      .slick-prev,
+      .slick-next {
+        color: #000;
+        background-color: #fff;
+        border: 2px solid #000;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slick-prev:hover,
+      .slick-next:hover,
+      .slick-prev:focus,
+      .slick-next:focus {
+        background-color: #000;
+        color: #fff;
+      }
+
+      .slick-prev {
+        left: -35px;
+      }
+
+      .slick-next {
+        right: -35px;
+      }
+
+      .slick-dots li button:before {
+        color: #000;
+      }
+
+      .slick-dots li.slick-active button:before {
+        color: #000;
+      }
+      .trending {
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .card {
+        width: 300px;
+        margin: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background: #fff;
+        transition: transform 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        max-height: 450px;
+        border-top: 1.5px solid rgba(128, 128, 128, 0.3);
+        border-left: 1.5px solid rgba(128, 128, 128, 0.3);
+        border-right: 1.5px solid rgba(128, 128, 128, 0.3);
+        border-bottom: 1.5px solid rgba(128, 128, 128, 0.3);
+        box-sizing: border-box;
+      }
+      .card:hover {
+        transform: scale(1.05);
+      }
+      .card img {
+        width: 100%;
+        height: 200px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        object-fit: cover;
+      }
+      .card-body {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      .card-title,
+      .card-price,
+      .card-desc,
+      .card-category {
+        margin-bottom: 5px;
+      }
+      .card button {
+        margin-top: 10px;
+        padding: 10px;
+        border: none;
+        background: #000;
+        color: #fff;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+      .card button:hover {
+        background: #fff;
+        color: #000;
+        border: 1px solid;
+      }
+    </style>
+    <main>
+      <!-- Product Carousel -->
+      <section id="product-carousel" class="section">
+        <div class="carousel">
+          <div>
+            <a href="/product/1"
+              ><img
+                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
+                alt="Product 1"
+            /></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trending Products -->
+      <section id="trending-products" class="section">
+        <h2>Trending Products</h2>
+        <div class="trending">
+          <!-- Product Card 1 -->
+          <div class="card">
+            <img
+              src="https://img.freepik.com/premium-photo/black-camera_488220-104.jpg"
+              alt="Product Image"
+            />
+            <div class="card-body">
+              <div class="card-title">Product Name 1</div>
+              <div class="card-price">$20.00</div>
+              <div class="card-desc">
+                This is a great product with high-quality features.
+              </div>
+              <div class="card-category">Category 1</div>
+              <button>Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest Products -->
+      <section id="latest-products" class="section">
+        <h2>Latest Products</h2>
+        <div class="trending">
+          <!-- Product Card 1 -->
+          <div class="card">
+            <img
+              src="https://img.freepik.com/premium-photo/black-camera_488220-104.jpg"
+              alt="Product Image"
+            />
+            <div class="card-body">
+              <div class="card-title">Product Name 1</div>
+              <div class="card-price">$20.00</div>
+              <div class="card-desc">
+                This is a great product with high-quality features.
+              </div>
+              <div class="card-category">Category 1</div>
+              <button>Add to Cart</button>
+            </div>
+          </div>
+		  </div>
+      </section>
+
+      <!-- Top Picks -->
+      <section id="top-picks" class="section">
+        <h2>Top Picks</h2>
+        <div class="trending">
+          <!-- Product Card 1 -->
+          <div class="card">
+            <img
+              src="https://img.freepik.com/premium-photo/black-camera_488220-104.jpg"
+              alt="Product Image"
+            />
+            <div class="card-body">
+              <div class="card-title">Product Name 1</div>
+              <div class="card-price">$20.00</div>
+              <div class="card-desc">
+                This is a great product with high-quality features.
+              </div>
+              <div class="card-category">Category 1</div>
+              <button>Add to Cart</button>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+    </main>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".carousel").slick({
+          infinite: true,
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          autoplay: true,
+          autoplaySpeed: 2000,
+          dots: true,
+          arrows: true,
+          prevArrow:
+            '<button type="button" class="slick-prev">Previous</button>',
+          nextArrow: '<button type="button" class="slick-next">Next</button>',
+        });
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+{% endblock %}

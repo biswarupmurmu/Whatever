@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="max-w-screen-xl mx-auto py-8">
+    <h1 class="text-3xl font-semibold mb-4">Category {{category}}</h1>
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="product-grid">
+    
+    {% for product in products%}
+      <!-- Product Card 1 -->
+    <div class="bg-white rounded-lg shadow-md p-6 block">
+        <div class="flex justify-center h-32 w-32">
+            <a href="{{url_for('product_bp.view_product_details', id=product.id)}}">            
+                <img src="{{product.image_url}}" alt="{{product.name}}" class="mb-4 rounded-md product-image">
+            </a>
+        </div>        
+    <h2 class="text-xl font-semibold mb-2">{{product.name}}</h2>
+    <p class="text-gray-600">{{product.small_description}}</p>
+    <p class="text-blue-700 mt-4 font-medium">₹ {{product.price}}</p>
+    {% for category in product.categories %}
+    <a href="{{url_for('product_bp.view_products_by_category', category=category)}}">{{category}}</a>
+    {% endfor %}
+    <a href="{{url_for('cart.add_to_cart', id=product.id)}}" class="block mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded text-center">Add to Cart</a>
+    </div>
+  {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}

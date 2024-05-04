@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<center><h2>Thank you for shopping with WE</h2></center>
+<center><strong>Order ID {{order.id}}</strong></center>
+<center><strong>Arriving date {{order.arriving_date.strftime('%d %h %Y')}}</strong></center>
+<center><strong>Amount  ₹{{total}}</strong></center>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block title %}Products{% endblock %} {% block
+content %}
+<style>
+  .card-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .card-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+  }
+  .card-category {
+	display: flex;
+    font-size: 12px;
+	  gap: 0.5rem;
+    color: #666;
+	margin: 0.5rem 0 0.5rem 0;
+  }
+  .card-category a {
+	  color: black;
+	  padding: 0.25rem;
+  }
+
+  .container {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: flex-start; /* Ensures cards align at their tops */
+  }
+  .card {
+    width: 300px;
+    margin: 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: #fff;
+    //transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Adjust based on content, with a max limit */
+    max-height: 450px; /* Maximum height set to avoid overly tall cards */
+    border-top: 1.5px solid rgba(128, 128, 128, 0.3);
+    border-left: 1.5px solid rgba(128, 128, 128, 0.3);
+    border-right: 1.5px solid rgba(128, 128, 128, 0.3);
+    border-bottom: 1.5px solid rgba(128, 128, 128, 0.3);
+    box-sizing: border-box;
+  }
+  .card img {
+    width: 100%;
+    height: 200px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    object-fit: cover;
+  }
+  .card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures space distribution within card */
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  .card-title,
+  .card-price,
+  .card-desc,
+  .card-category {
+	color: black;
+	text-decoration: none;
+  }
+  .card button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background: #000;
+    color: #fff;
+    border-radius: 20px; /* Fully rounded sides */
+    cursor: pointer;
+  }
+  .card button:hover {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+  }
+  .add-to-cart{
+	  padding: 0.25rem;
+	  border: solid grey 0.1rem;
+	  border-radius: 2rem;
+	  text-align: center;
+	  color: black;
+	  text-decoration: none;
+  }
+
+  .add-to-cart:hover{
+	  background-color: black;
+	  color: white;
+  }
+
+</style>
+<div class="container">
+  {% for product in products%}
+  <div class="card">
+	<a href="{{url_for('product_bp.view_product_details', id=product.id)}}">
+		<img src="{{product.image_url}}" alt="{{product.name}}" />
+	</a>
+    <div class="card-body">
+      <div class="card-title">{{product.name}}</div>
+      <div class="card-price">${{product.price}}</div>
+      <div class="card-desc">{{product.small_description}}</div>
+		<div class="card-category">
+				{% for category in product.categories %}
+				<a
+					href="{{url_for('product_bp.view_products_by_category', category=category)}}"
+				>{{category}}</a
+				>
+				{% endfor %}
+			</div>
+      <a href="{{url_for('cart.add_to_cart', id=product.id)}}" class="add-to-cart"
+        >Add to Cart</a
+      >
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

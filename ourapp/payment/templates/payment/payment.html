@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+ <!-- Main Content -->
+ <div class="container mx-auto py-8 px-4">
+
+    <!-- Payment Section -->
+    <div class="payment-section max-w-lg mx-auto bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold mb-6">Make Payment</h2>
+
+        <!-- Mode of Payment -->
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold mb-2">Mode of Payment</h3>
+            <div class="flex items-center">
+                <input type="radio" id="creditCard" name="paymentMode" value="creditCard"
+                    class="mr-2" checked>
+                <label for="creditCard" class="mr-6">Credit Card</label>
+                <input type="radio" id="upi" name="paymentMode" value="upi" class="mr-2">
+                <label for="upi">UPI</label>
+            </div>
+        </div>
+
+        <!-- Credit Card Payment Form -->
+        <div id="creditCardForm" class="mb-6">
+            <h3 class="text-xl font-semibold mb-2">Credit Card Details</h3>
+            <div class="flex flex-col space-y-4">
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number"
+                    class="border rounded-md p-2">
+                <input type="text" id="cardHolderName" name="cardHolderName" placeholder="Card Holder Name"
+                    class="border rounded-md p-2">
+                <input type="text" id="expiryDate" name="expiryDate" placeholder="Expiry Date (MM/YY)"
+                    class="border rounded-md p-2">
+                <input type="text" id="cvv" name="cvv" placeholder="CVV (3 digit)" class="border rounded-md p-2">
+            </div>
+        </div>
+
+        <!-- UPI Payment Form -->
+        <div id="upiForm" class="hidden mb-6">
+            <h3 class="text-xl font-semibold mb-2">UPI ID</h3>
+            <input type="text" id="upiId" name="upiId" placeholder="Enter UPI ID"
+                class="border rounded-md p-2">
+        </div>
+
+        <!-- Make Payment Button -->
+        <a href="{{url_for('order_bp.place_order')}}" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded">Make
+            Payment</a>
+
+        <!-- Back Button -->
+        <a href="{{url_for('cart.view_cart')}}" class="block text-center text-blue-500 mt-4">Back to My Cart</a>
+    </div>
+</div>
+
+
+
+{% endblock %}
