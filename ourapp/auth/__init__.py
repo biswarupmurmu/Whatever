@@ -1,7 +1,7 @@
 '''
 This module handles the user authentication for our application.
 '''
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user
 from ourapp.models import Customer
@@ -12,20 +12,22 @@ from .form import SignupForm
 auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
 
 
-@auth.route("/login", methods=["GET", "POST"])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
-    '''
-    This is the login method
-    '''
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
         user = Customer.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            requested_next_route = request.args.get("next")
-            return redirect(requested_next_route or url_for("user.view_profile"))
-    return render_template("auth/login.html")
+            requested_next_route = request.args.get('next')
+            return redirect(requested_next_route or url_for('public.index'))
+        else:
+            flash('Wrong email or password. Please try again.', 'error')  # Flash message for wrong credentials
+            return redirect(url_for('auth.login'))  # Redirect back to the login page
+    return render_template('auth/login.html')
+
+
 
 
 @auth.route("/signup", methods=["GET", "POST"])
