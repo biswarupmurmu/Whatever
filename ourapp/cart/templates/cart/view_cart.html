@@ -9,8 +9,8 @@
     }
 </style>
 <!-- Main Content -->
+{% if cart %}
 <div class="container mx-auto py-8 px-4">
-    {% if cart %}
     <h1 class="text-xl font-bold">Welcome to Cart</h1>
     <!-- Cart Items -->
     <div class="cart-items mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">    
@@ -61,9 +61,13 @@
     <div class="proceed-btn mt-8 flex justify-end">
         <a href="{{url_for('payment.payment')}}" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded">Proceed to Payment</a>
     </div>
-    {% else %}
-    <h1 class="text-xl font-bold">No Items Added to Cart</h1>
-    <h1 class="text-xl font-bold">Please <a href="{{url_for('product_bp.view_all_products')}}">CLICK HERE</a> to Shop. </h1>
-    {% endif %}
 </div>
+{% else %}
+<div class="p-10">
+	<center>
+		<h1 class="text-xl font-bold text-gray-600">No items in the cart</h1>
+		<h1 class="text-xl font-bold">Please <a class="text-blue-500" href="{{url_for('product_bp.view_all_products')}}">click here</a> to Shop. </h1>
+	</center>
+</div>
+{% endif %}
 {% endblock %}
