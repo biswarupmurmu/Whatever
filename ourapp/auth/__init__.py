@@ -7,25 +7,30 @@ from flask_login import login_user, login_required, logout_user
 from ourapp.models import Customer
 from ourapp import db
 from ourapp import login_manager
-from .form import SignupForm
+from .form import LoginForm, SignupForm
 
 auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = Customer.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            requested_next_route = request.args.get('next')
-            return redirect(requested_next_route or url_for('public.index'))
-        else:
-            flash('Wrong email or password. Please try again.', 'error')  # Flash message for wrong credentials
-            return redirect(url_for('auth.login'))  # Redirect back to the login page
-    return render_template('auth/login.html')
+    form = LoginForm(request.form)
+    if request.method == "POST":
+        form.process_data()
+        if form.validate():
+            email = form.email.data
+            password = form.password.data
+            user = Customer.query.filter_by(email=email).first()
+            if not user:
+                form.email.errors = ["Email not registered."]
+            elif not check_password_hash(user.password, password):
+                form.password.errors = ["Wrong password entered."]
+            elif user and check_password_hash(user.password, password):
+                login_user(user)
+                requested_next_route = request.args.get('next')
+                flash("Login successful", category="success")
+                return redirect(requested_next_route or url_for('public.index'))
+    return render_template('auth/login.html', form=form)
 
 
 
@@ -56,6 +61,7 @@ def signup():
                 )
                 db.session.add(user)
                 db.session.commit()
+                flash(message="Account created successfully!", category="success")
                 return redirect(url_for("auth.login"))
     return render_template("auth/signup.html", form=form)
 

@@ -49,4 +49,11 @@ class LoginForm(FlaskForm):
 
     '''
     email = EmailField("Email", validators=[InputRequired()])
-    password = PasswordField("Password")
+    password = PasswordField("Password", validators=[InputRequired()])
+
+
+    def process_data(self):
+        '''
+        This method processes the form data. 
+        '''
+        self.email.data = self.email.data.strip().lower()
