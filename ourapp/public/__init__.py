@@ -60,12 +60,16 @@ def index():
     trending_products=get_trending_products()
     
     electronics_products = products_by_category("electronics")    
+    stationary_products = products_by_category("stationary")    
+    homedecor_products = products_by_category("homedecor")    
     
     
     return render_template(
         "public/home.html",
         trending_products=trending_products,
         latest_products=latest_products,
-        electronics_products = electronics_products
+        electronics_products = electronics_products,
+        stationary_products = stationary_products,
+        homedecor_products = homedecor_products
         )
 

@@ -109,7 +109,9 @@
         </div>
         {% endfor %}
     </div>
+	{% if section_category != "trending" %}
     <div id="view-more-btn">
         <a href="{{url_for('product_bp.view_products_by_category',category=section_category)}}">View More</a>
     </div>
+	{% endif %}
 </section>

@@ -221,17 +221,29 @@
 
       <!-- Trending Products -->
         {% set section_title = 'Trending Products' %}
-        {% set section_category = 'Trending' %}
+        {% set section_category = 'trending' %}
         {% set section_products=trending_products[:3]%}
         {% include 'public/components/section.html'%}
+
       <!-- Electronics Products -->
         {% set section_title = 'Electronics' %}
-        {% set section_category = 'Electronics' %}
+        {% set section_category = 'electronics' %}
         {% set section_products=electronics_products[:3]%}
         {% include 'public/components/section.html'%}
 		  
 
+      <!-- Stationary Products -->
+        {% set section_title = 'Stationary' %}
+        {% set section_category = 'stationary' %}
+        {% set section_products=stationary_products[:3]%}
+        {% include 'public/components/section.html'%}
       
+
+      <!-- Homedecor Products -->
+        {% set section_title = 'Home Decor' %}
+        {% set section_category = 'homedecor' %}
+        {% set section_products=homedecor_products[:3]%}
+        {% include 'public/components/section.html'%}
 
     </main>
 
