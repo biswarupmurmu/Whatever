@@ -1,8 +1,63 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    /* Address Form CSS */
+    #editPasswordBtn:checked ~ #editPasswordForm {
+        display: block;
+    }
+</style>
 
-<h1>This is user profile page</h1>
-<h1>Hello {{current_user.fname}}</h1>
+<!-- Main Content -->
+<div class="container mx-auto py-8 px-4">
+
+
+    <!-- Profile Details -->
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-semibold mb-4">Profile Details</h2>
+                <div class="mb-4">
+                    <label class="text-gray-700 font-medium">Name:</label>
+                    <p class="text-gray-900">{{current_user.fname}} {{current_user.lname}}</p>
+                </div>
+                <div class="mb-4">
+                    <label class="text-gray-700 font-medium">Customer ID:</label>
+                    <p class="text-gray-900">{{current_user.id}}</p>
+                </div>
+                <div class="mb-4">
+                    <label class="text-gray-700 font-medium">Email ID:</label>
+                    <p class="text-gray-900">{{current_user.email}}</p>
+                </div>
+            </div>
+            <!-- Profile Picture -->
+            <img src="https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg" alt="Profile Image" class="h-32 w-32 rounded-full">
+        </div>
+
+        <div class="p-6">
+            <!-- Sign Out Button (Initially Visible) -->
+            <a href="{{url_for('auth.logout')}}" id="sign-out-btn"
+                class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">Log Out</a>
+                <label for="editPasswordBtn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 ml-4">Update Password</label>
+                <input type="checkbox" id="editPasswordBtn" class="hidden">
+                <div id="editPasswordForm" class="edit-address-form hidden">
+                    <!-- Edit password Form -->
+                    <form action="{{ url_for('user.update_password') }}" method="POST">
+                        <!-- Form Inputs -->
+                        <input type="text" name="oldPassword" id="oldPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Old Password">
+                        <input type="text" name="newPassword" id="newPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter New Password">
+                        <input type="text" name="confirmPassword" id="confirmPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Confirm Password">
+                        <!-- Submit Button -->
+                        <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Submit</button>
+                        <a href="{{url_for('user.view_profile')}}" id="cancel-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">Cancel</a>
+                    </form>
+                </div>
+           
+        </div>
+    </div>
+
+</div>
+
+
 
 {% endblock %}

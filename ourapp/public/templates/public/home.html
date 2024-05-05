@@ -201,67 +201,34 @@
       }
     </style>
     <main>
+      
       <!-- Product Carousel -->
       <section id="product-carousel" class="section">
+        
         <div class="carousel">
+          {% for product in latest_products[:6] %}
           <div>
-            <a href="/product/1"
+            <a href="{{url_for('product_bp.view_product_details', id=product.id)}}"
               ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
+                src="{{product.image_url}}"
+                alt="{{product.name}}"
             /></a>
           </div>
-          <!--Product2 -->
-          <div>
-            <a href="/product/1"
-              ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
-            /></a>
-          </div>
-          <!--Product2 -->
-          <div>
-            <a href="/product/1"
-              ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
-            /></a>
-          </div>
-          <!--Product2 -->
-          <div>
-            <a href="/product/1"
-              ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
-            /></a>
-          </div>
-          <!--Product2 -->
-          <div>
-            <a href="/product/1"
-              ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
-            /></a>
-          </div>
-          <!--Product2 -->
-          <div>
-            <a href="/product/1"
-              ><img
-                src="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/pass/How-to-Choose-a-Laptop-August-2023-Gear.jpg"
-                alt="Product 1"
-            /></a>
-          </div>
+          {% endfor %}
+         
         </div>
       </section>
 
       <!-- Trending Products -->
         {% set section_title = 'Trending Products' %}
+        {% set section_category = 'Trending' %}
         {% set section_products=trending_products[:3]%}
-          {% include 'public/components/section.html'%}
-      <!-- Latest Products -->
-          {% set section_title = 'Latest Arrivals' %}
-          {% set section_products=trending_products[:3]%}
-            {% include 'public/components/section.html'%}
+        {% include 'public/components/section.html'%}
+      <!-- Electronics Products -->
+        {% set section_title = 'Electronics' %}
+        {% set section_category = 'Electronics' %}
+        {% set section_products=electronics_products[:3]%}
+        {% include 'public/components/section.html'%}
 		  
 
       

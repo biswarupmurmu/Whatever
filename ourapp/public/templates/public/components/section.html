@@ -1,68 +1,96 @@
+<style>
+    .card {
+        width: 350px; /* Increased card width */
+        height: 430px; /* Adjusted card height */
+        margin: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background: #fff;
+        transition: transform 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Ensures space distribution within card */
+        border: 1px solid rgba(128, 128, 128, 0.3);
+        box-sizing: border-box;
+    }
 
+    .card:hover {
+        transform: scale(1.025);
+    }
 
-    <style>
-        .card {
-            width: 350px; /* Increased card width */
-            height: 430px; /* Adjusted card height */
-            margin: 10px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            background: #fff;
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Ensures space distribution within card */
-            border: 1px solid rgba(128, 128, 128, 0.3);
-            box-sizing: border-box;
-        }
-        .card:hover {
-            transform: scale(1.025);
-        }
-        .card img {
-            width: 100%;
-            height: 250px; /* Adjusted image height */
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            object-fit: contain; /* Retain original behavior */
-        }
-        .card-body {
-            padding: 15px;
-        }
-        .card-title {
-            font-size: 20px; /* Increased font size */
-            font-weight: bold;
-            margin-bottom: 10px; /* Increased margin */
-            font-family: "Roboto", sans-serif; /* Change to your desired font */
-        }
-        .card-desc {
-            font-size: 16px; /* Increased font size */
-            color: #666;
-            margin-bottom: 10px; /* Increased margin */
-        }
-        .card-price {
-            font-size: 18px; /* Increased font size */
-            font-weight: bold;
-            color: #000;
-            margin-bottom: 10px; /* Increased margin */
-        }
-        .add-to-cart {
-            padding: 8px 12px; /* Adjust padding */
-            background-color: #4299e1; /* Set background color */
-            color: #fff; /* Set text color */
-            border: none; /* Remove border */
-            border-radius: 6px; /* Set border radius */
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: inline-block; /* Added display property */
-            text-decoration: none; /* Remove default link underline */
-        }
-        .add-to-cart:hover {
-            background-color: #3182ce; /* Change hover background color */
-        }
-    </style>
-    <section id="latest-products" class="section">
-        <h1 class="p-10" style="font-size:2rem">{{section_title}}</h1>
+    .card img {
+        width: 100%;
+        height: 250px; /* Adjusted image height */
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        object-fit: contain; /* Retain original behavior */
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 20px; /* Increased font size */
+        font-weight: bold;
+        margin-bottom: 10px; /* Increased margin */
+        font-family: "Roboto", sans-serif; /* Change to your desired font */
+    }
+
+    .card-desc {
+        font-size: 16px; /* Increased font size */
+        color: #666;
+        margin-bottom: 10px; /* Increased margin */
+    }
+
+    .card-price {
+        font-size: 18px; /* Increased font size */
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 10px; /* Increased margin */
+    }
+
+    .add-to-cart {
+        padding: 8px 12px; /* Adjust padding */
+        background-color: #4299e1; /* Set background color */
+        color: #fff; /* Set text color */
+        border: none; /* Remove border */
+        border-radius: 6px; /* Set border radius */
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: inline-block; /* Added display property */
+        text-decoration: none; /* Remove default link underline */
+    }
+
+    .add-to-cart:hover {
+        background-color: #3182ce; /* Change hover background color */
+    }
+
+    #view-more-btn {
+        margin-top: 20px;
+        text-align: right; /* Align to the right */
+    }
+
+    #view-more-btn a {
+        padding: 10px 20px;
+        background-color: transparent;
+        color: #4299e1;
+        border: 1px solid #4299e1;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+    }
+
+    #view-more-btn a:hover {
+        color: #fff;
+        background-color: #4299e1;
+        border-color: #4299e1;
+    }
+</style>
+
+<section id="latest-products" class="section">
+    <h1 class="py-2" style="font-size:1.8rem">{{section_title}}</h1>
     <div class="flex justify-center gap-4">
         {% for product in section_products %}
         <div class="card">
@@ -81,6 +109,7 @@
         </div>
         {% endfor %}
     </div>
+    <div id="view-more-btn">
+        <a href="{{url_for('product_bp.view_products_by_category',category=section_category)}}">View More</a>
+    </div>
 </section>
-
-
