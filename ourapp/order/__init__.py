@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 from ourapp import db
 from ourapp.models import CartItem, Product, Order, OrderedItem
@@ -55,8 +55,55 @@ def view_orders(status):
                 total += (ordered_item.price * ordered_item.quantity)
                 items.add(ordered_item.product.name)
             orders_by_status.append([order,list(items), total])
+    if status == "cancelled":
+        return render_template("order/cancelled.html",orders=orders_by_status ,status=status.lower())
+    elif status == "delivered":
+        return render_template("order/delivered.html",orders=orders_by_status ,status=status.lower())
+    elif status == "returned":
+        return render_template("order/returned.html",orders=orders_by_status ,status=status.lower())
+    elif status == "intransit":
+        return render_template("order/intransit.html",orders=orders_by_status ,status=status.lower())
 
-    print(*orders_by_status)
 
-    return render_template("order/view_orders.html",orders=orders_by_status ,status=status.lower())
-    return render_template("order/view_orders.html",orders=orders, status=status.lower())
+    return render_template("order/confirmed.html",orders=orders_by_status ,status=status.lower())
+
+
+@order_bp.route('/<int:order_id>/change_address')
+@login_required
+def change_address(order_id):
+    order=Order.query.filter_by(id=order_id).first()
+    if order and order.customer_id == current_user.id:
+        order.address = request.args.get('address')
+        db.session.commit()
+    return redirect(url_for('order_bp.view_orders', status='confirmed'))
+
+@order_bp.route('/<int:order_id>/feedback')
+@login_required
+def get_feedback(order_id):
+    order=Order.query.filter_by(id=order_id).first()
+    if order and order.customer_id == current_user.id:
+        print("ABCD")
+        order.feedback = request.args.get('feedback')
+        print(order.feedback)
+        db.session.commit()
+    return redirect(url_for('order_bp.view_orders', status='delivered'))
+
+@order_bp.route('/<int:order_id>/cancel')
+@login_required
+def cancel_order(order_id):
+    order=Order.query.filter_by(id=order_id).first()
+    if order and order.customer_id == current_user.id:
+        order.status = "cancelled"
+        order.date_according_to_status = datetime.now()
+        db.session.commit()
+    return redirect(url_for('order_bp.view_orders', status='cancelled'))
+
+@order_bp.route('/<int:order_id>/return')
+@login_required
+def return_order(order_id):
+    order=Order.query.filter_by(id=order_id).first()
+    if order and order.customer_id == current_user.id:
+        order.status = "returned"
+        order.date_according_to_status = datetime.now()
+        db.session.commit()
+    return redirect(url_for('order_bp.view_orders', status='returned'))

@@ -64,6 +64,7 @@ class Order(db.Model):
     date_according_to_status=db.Column(db.DateTime, default=datetime.now())
     address = db.Column(db.Text(150))
     ordered_items = db.relationship('OrderedItem', backref='order', cascade='all, delete-orphan')
+    feedback = db.Column(db.Text(300))
     
     def __repr__(self):
         return f'{self.id} ordered on {self.ordered_date}'

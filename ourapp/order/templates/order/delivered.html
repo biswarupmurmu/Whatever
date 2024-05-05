@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+ <!-- Main Content -->
+ <div class="container mx-auto py-8 px-4">
+
+    <!-- Orders Table -->
+	<h2 class="order-heading text-2xl font-semibold mb-4">Your {{status}} Orders</h2>
+    <table id="confirmed-orders"
+        class="w-full border-collapse border border-gray-200 mt-8">
+        <thead>
+            <tr class="bg-gray-50">
+                <th class="border border-gray-200 px-4 py-2">Order Id</th>
+                <th class="border border-gray-200 px-4 py-2">Ordered Item</th>
+                <th class="border border-gray-200 px-4 py-2">Ordered Date</th>
+                <th class="border border-gray-200 px-4 py-2">Arriving Date</th>
+                <th class="border border-gray-200 px-4 py-2">Amount</th>
+                <th class="border border-gray-200 px-4 py-2">Address</th>
+                <th class="border border-gray-200 px-4 py-2">Feedback</th>
+                <th class="border border-gray-200 px-4 py-2">Return</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Confirmed Orders data here -->
+            {% for i in orders%}
+			{% set order = i[0] %}
+			{% set items = i[1] %}
+			{% set order_total = i[2] %}
+
+
+
+            <tr>
+                <td class="border border-gray-200 px-4 py-2 text-center">{{order.id}}</td>
+				<td class="border border-gray-200 px-4 py-2 text-center">
+					{% for item in items %}
+					<ol>
+						<li>{{item}}</li>
+					</ol>
+					{% endfor %}
+				</td>
+                <td class="border border-gray-200 px-4 py-2 text-center">{{order.ordered_date.strftime('%Y-%m-%d')}}</td>
+                <td class="border border-gray-200 px-4 py-2 text-center">{{order.arriving_date.strftime('%Y-%m-%d')}}</td>
+				        <td class="border border-gray-200 px-4 py-2 text-center">{{order_total}}</td>
+				        <td class="border border-gray-200 px-4 py-2 text-center">{{order.address}}</td>
+                {% if order.feedback %}
+                <td class="border border-gray-200 px-4 py-2 text-center">{{order.feedback}}</td>
+                {% else %}
+                <td class="border border-gray-200 px-4 py-2 text-center"><button id="{{order.id}}" onclick="openPopup(this)" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Feedback</button></td>
+                {% endif %}
+                <td class="border border-gray-200 px-4 py-2 text-center"><a href="{{url_for('order_bp.return_order', order_id=order.id)}}" class="text-red-500">Return</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+        
+
+    </div>
+
+<!-- Button to open pop-up -->
+
+<!-- Pop-up overlay -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden"></div>
+
+<!-- Pop-up content -->
+<div id="popup" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md shadow-md z-20 hidden">
+  <h2 class="text-lg font-semibold mb-4">Enter feedback</h2>
+  <form id="FeedbackForm">
+    <div class="mb-4">
+      <label for="feedback" class="block text-sm font-medium text-gray-700">Feedback:</label>
+      <input type="text" id="feedback" name="feedback" class="border rounded-md p-2 w-full" placeholder="Enter your feedback">
+    </div>
+    <div class="flex justify-end">
+      <button type="button" onclick="closePopup()" class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-md mr-2">Cancel</button>
+      <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Function to open the pop-up
+  function openPopup(element) {
+    let order_id = element.getAttribute("id")
+    let FeedbackForm = document.getElementById("FeedbackForm")
+
+    let action_url = `/order/${order_id}/feedback`
+    console.log(action_url)
+    FeedbackForm.setAttribute("action", action_url)
+
+    document.getElementById('overlay').classList.remove('hidden');
+    document.getElementById('popup').classList.remove('hidden');
+  }
+
+  // Function to close the pop-up
+  function closePopup() {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('popup').classList.add('hidden');
+  }
+</script>
+
+
+{% endblock %}
