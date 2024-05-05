@@ -22,6 +22,12 @@
                         <li>
                             <a href="{{url_for('product_bp.view_products_by_category',category='Electronics')}}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Electronics</a>
                         </li>
+                        <li>
+                            <a href="{{url_for('product_bp.view_products_by_category',category='Home Decor')}}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Home Decor</a>
+                        </li>
+                        <li>
+                            <a href="{{url_for('product_bp.view_products_by_category',category='Stationary')}}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Stationary</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -54,7 +60,10 @@
                 </div>
             </div>
             <a href="{{url_for('cart.view_cart')}}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Cart</a>
-            <strong class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Welcome {{current_user.fname}}</strong>
+            <div class="user hidden md:flex items-center space-x-4">
+                <a href="{{url_for('user.view_profile')}}"><img src="https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg" alt="Profile Image" class="h-8 w-8 rounded-full"></a>
+                <a href="{{url_for('user.view_profile')}}"><span class="text-blue-700 font-bold">{{current_user.fname}}</span></a>
+            </div>
             <a href="{{url_for('auth.logout')}}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Logout</a>
             {% endif %}
             {% if current_user.is_anonymous %}

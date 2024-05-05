@@ -73,6 +73,7 @@ def logout():
     This handles the logout funtionality
     '''
     logout_user()
+    flash('Logout Successful!','success')
     return redirect(url_for("public.index"))
 
 
