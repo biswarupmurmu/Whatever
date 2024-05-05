@@ -16,6 +16,7 @@ def view_profile():
 def update_address():
     current_user.address = request.form['newAddress']
     db.session.commit()
+    flash(message="Addredd updated successfully", category="success")
     return redirect(url_for('cart.view_cart'))
 
 @user_bp.route("/update-password", methods=['POST'])

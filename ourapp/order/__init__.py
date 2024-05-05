@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, flash, render_template, request, redirect, session, url_for
 from flask_login import current_user, login_required
 from ourapp import db
 from ourapp.models import CartItem, Product, Order, OrderedItem
@@ -12,9 +12,16 @@ def place_order():
     # Ensure the cart is not empty
     # If empty return to products or say no item in the cart
     if len(current_user.cart) <= 0:
-        # print(current_user.cart)
-        return "No items in the cart"
-    # print(current_user.cart)
+        flash(message="Cart is empty", category="info")
+        return redirect(url_for("public.index"))
+    # Check if payment is successful
+    if "payment_received" not in session:
+        flash(message="Payment unsuccessful", category="error")
+        return redirect(url_for("payment.payment"))
+
+    # Removing payment status
+    session.pop("payment_received")
+
     customer_id=current_user.id
     arriving_date=datetime.now()+timedelta(days=7)
     new_order=Order(customer_id=customer_id, arriving_date=arriving_date, address=current_user.address)
@@ -30,16 +37,9 @@ def place_order():
         db.session.add(new_orderedItem)
     CartItem.query.filter_by(customer_id=customer_id).delete() # Clearing the user's cart
     db.session.commit()
-    total=0
-    # for order in current_user.orders:
-    #     for orderedItem in order.ordered_items:
-    #         print(orderedItem.product,orderedItem.product.price,orderedItem.quantity)
-    #         total+=(orderedItem.product.price*orderedItem.quantity)
-    for orderedItem in new_order.ordered_items:
-        print(orderedItem.product,orderedItem.product.price,orderedItem.quantity)
-        total+=(orderedItem.product.price*orderedItem.quantity)
+    flash(message=f"Order placed successfully", category="success")
             
-    return render_template("order/acknowledgement.html", total=total, order=new_order)
+    return redirect(url_for("public.index"))
 
 @order_bp.route('/<status>')
 @login_required
