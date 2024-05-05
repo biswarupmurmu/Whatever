@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, flash, render_template, redirect, url_for
 from flask_login import current_user, login_required
 from ourapp import db
 from ourapp.models import CartItem, Product
@@ -20,10 +20,8 @@ def add_to_cart(id):
             new_cart_item = CartItem(product_id=id, customer_id=current_user.id)
             db.session.add(new_cart_item)
         db.session.commit()
+        flash(message="Product added to the cart!", category="success")
 
-        for cartitem in current_user.cart:
-            print(cartitem.product, cartitem.quantity)
-        
     return redirect(url_for('cart.view_cart'))
 
 @cart_bp.route("/")
