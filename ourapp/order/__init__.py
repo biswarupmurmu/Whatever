@@ -10,6 +10,7 @@ from ourapp import db
 from ourapp.models import CartItem, Product, Order, OrderedItem
 from datetime import datetime, timedelta
 from random import randint
+from ourapp.logging_config.config import logger
 
 order_bp=Blueprint("order_bp",__name__, template_folder="templates",url_prefix="/order")
 
@@ -61,6 +62,7 @@ def place_order():
         price = cartItem.product.price
         new_orderedItem=OrderedItem(order_id=order_id, product_id=product_id, quantity=quantity, price=price)
         db.session.add(new_orderedItem)
+        logger.info("Order placed successfully for Customer %s(%s) Order ID: %s",current_user.fname, current_user.id, new_order.id)
     CartItem.query.filter_by(customer_id=customer_id).delete() # Clearing the user's cart
     db.session.commit()
     flash(message=f"{new_order.id}", category="order_placed_success")
@@ -93,6 +95,7 @@ def view_orders(status):
                 total += (ordered_item.price * ordered_item.quantity)
                 items.add(ordered_item.product.name)
             orders_by_status.append([order,list(items), total])
+    logger.info("Customer %s(%s) Viewing orders with status: %s",current_user.fname,current_user.id, status.lower())
     if status == "cancelled":
         return render_template("order/cancelled.html",orders=orders_by_status ,status=status.lower())
     elif status == "delivered":
@@ -127,6 +130,8 @@ def change_address(order_id):
         else:
             order.address = new_order_address
             db.session.commit()
+            logger.info("Address updated for customer %s(%s) for order %s. New address: %s",current_user.fname,current_user.id,  order.id, new_order_address)
+            flash(message="Address updated successfully",category='success')
     return redirect(url_for('order_bp.view_orders', status='confirmed'))
 
 @order_bp.route('/<int:order_id>/feedback')
@@ -148,6 +153,7 @@ def get_feedback(order_id):
         order.feedback = request.args.get('feedback')
         print(order.feedback)
         db.session.commit()
+        logger.info("Feedback added by Customer %s(%s) for order %s. Feedback: %s",current_user.fname, current_user.id, order.id, order.feedback)
     return redirect(url_for('order_bp.view_orders', status='delivered'))
 
 @order_bp.route('/<int:order_id>/cancel')
@@ -169,6 +175,7 @@ def cancel_order(order_id):
         order.date_according_to_status = datetime.now()
         db.session.commit()
         flash(message="Order cancelled", category="success")
+        logger.info("Order Cancelled successfully for Customer %s(%s) Order ID: %s",current_user.fname, current_user.id, order_id)
     return redirect(url_for('order_bp.view_orders', status='cancelled'))
 
 @order_bp.route('/<int:order_id>/return')
@@ -190,5 +197,5 @@ def return_order(order_id):
         order.date_according_to_status = datetime.now()
         db.session.commit()
         flash(message="Return requested", category="success")
-
+        logger.info("Return requested for order %s by user %s(%ss)", order.id,current_user.fname, current_user.id)
     return redirect(url_for('order_bp.view_orders', status='returned'))

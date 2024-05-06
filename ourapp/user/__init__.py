@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 from ourapp import db
 from ourapp.models import CartItem, Product
 from werkzeug.security import generate_password_hash, check_password_hash
+from ourapp.logging_config.config import logger
 
 user_bp = Blueprint("user", __name__, template_folder="templates", url_prefix="/")
 
@@ -15,6 +16,7 @@ def view_profile():
     Returns:
         str: Rendered HTML template for the user's profile page.
     """
+    logger.info("Viewing %s(%s) user profile.",current_user.fname,current_user.id)
     return render_template("user/profile.html")
 
 @user_bp.route("/update-address", methods=['POST'])
@@ -29,6 +31,7 @@ def update_address():
     current_user.address = request.form['newAddress']
     db.session.commit()
     flash(message="Addredd updated successfully", category="success")
+    logger.info("Customer %s(%s) Address updated successfully.", current_user.fname, current_user.id)
     return redirect(url_for('cart.view_cart'))
 
 @user_bp.route("/update-password", methods=['POST'])
@@ -46,19 +49,23 @@ def update_password():
         confirm_password = request.form['confirmPassword']
         if not check_password_hash(current_user.password,old_password):
             flash('Invalid old password. Please try again.', 'error')
+            logger.warning("Invalid old password provided by Customer %s(%s) during password update.",current_user.fname, current_user.id)
             return redirect(url_for('user.view_profile'))
 
         if new_password != confirm_password:
             flash('New password and confirm password do not match. Please try again.', 'error')
+            logger.warning("New password and confirm password provided by Customer %s(%s) do not match.",current_user.fname, current_user.id )
             return redirect(url_for('user.view_profile'))
         
         if check_password_hash(current_user.password,new_password):
             flash('New Password and Old Password Cannote be same', 'info')
+            logger.warning("New password and old password provide by Customer %s(%s) are the same.", current_user.fname, current_user.id)
             return redirect(url_for('user.view_profile'))
 
         current_user.password=generate_password_hash(new_password)
         db.session.commit()
         flash('Password updated successfully.', 'success')
+        logger.info("Password for Customer %s(%s) is updated successfully.", current_user.fname, current_user.id)
         return redirect(url_for('user.view_profile'))
 
     return redirect(url_for('user.view_profile'))  
