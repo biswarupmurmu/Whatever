@@ -1,6 +1,8 @@
-'''
+"""
 This module handles the user authentication for our application.
-'''
+
+This module provides routes for user login, signup, and logout functionalities.
+"""
 
 
 from ourapp.logging_config.config import logger
@@ -20,6 +22,13 @@ auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/aut
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handle user login.
+
+    GET: Renders the login form.
+    POST: Processes login form submission. If successful, logins the user and
+    redirects to the requested page or the homepage.
+    """
     form = LoginForm(request.form)
     if request.method == "POST":
         form.process_data()
@@ -47,9 +56,13 @@ def generate_customer_id():
 
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
-    '''
-    This is the signup method
-    '''
+    """
+    Handle user signup.
+
+    GET: Renders the signup form.
+    POST: Processes signup form submission. If successful, creates a new user
+    account and redirects to the login page.
+    """
     form = SignupForm(request.form)
     if request.method == "POST":
         form.process_data()
@@ -87,9 +100,11 @@ def signup():
 @auth.route("/logout")
 @login_required
 def logout():
-    '''
-    This handles the logout funtionality
-    '''
+    """
+    Handle user logout.
+
+    Logs out the currently logged-in user and redirects to the homepage.
+    """
     logout_user()
     flash('Logout Successful!','success')
     logger.info("Logout Successful for Customer" )
@@ -102,7 +117,10 @@ login_manager.login_view = "auth.login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    '''
-    Loads the user as per the instructions in Flask-Login module
-    '''
+    """
+    Load the user object from the database.
+
+    This function is required by Flask-Login to load a user from the
+    database based on the user_id provided.
+    """
     return Customer.query.get(int(user_id))

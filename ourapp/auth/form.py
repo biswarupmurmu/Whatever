@@ -1,6 +1,9 @@
-'''
-This Module validates Signup and Login forms of the customer.
-'''
+"""
+This module validates Signup and Login forms for customers.
+
+This module provides FlaskForm classes for validating and processing Signup
+and Login forms submitted by customers.
+"""
 from flask_wtf import FlaskForm
 from wtforms import EmailField, PasswordField, StringField
 from wtforms.validators import Email, EqualTo, InputRequired, length
@@ -8,10 +11,18 @@ from wtforms.validators import Email, EqualTo, InputRequired, length
 
 class SignupForm(FlaskForm):
     '''
-    This class creates a Signup Form.
+    Create a Signup Form for customers.
 
-    ARGS:
-        It inherits FlaskForm to create Signup Form.
+    Inherits:
+        FlaskForm: Base class for creating forms in Flask.
+
+    Attributes:
+        fname (StringField): Field for entering first name.
+        lname (StringField): Field for entering last name.
+        email (EmailField): Field for entering email address.
+        password (PasswordField): Field for entering password.
+        confirm_password (PasswordField): Field for confirming password.
+
     '''
     fname = StringField("First name", validators=[InputRequired()])
     lname = StringField("Last name")
@@ -33,7 +44,7 @@ class SignupForm(FlaskForm):
 
     def process_data(self):
         '''
-        This method processes the form data. 
+        Process form data by stripping leading and trailing spaces from fields.
         '''
         self.fname.data = self.fname.data.strip()
         self.lname.data = self.lname.data.strip()
@@ -42,10 +53,14 @@ class SignupForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     '''
-    This class creates a Login Form.
+    Create a Login Form for customers.
 
-    ARGS:
-        It inherits from FlaskForm to create Login Form.
+    Inherits:
+        FlaskForm: Base class for creating forms in Flask.
+
+    Attributes:
+        email (EmailField): Field for entering email address.
+        password (PasswordField): Field for entering password.
 
     '''
     email = EmailField("Email", validators=[InputRequired()])
@@ -54,6 +69,6 @@ class LoginForm(FlaskForm):
 
     def process_data(self):
         '''
-        This method processes the form data. 
+        Process form data by converting email to lowercase and stripping leading and trailing spaces.
         '''
         self.email.data = self.email.data.strip().lower()
