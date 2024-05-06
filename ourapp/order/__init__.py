@@ -1,3 +1,9 @@
+"""
+This blueprint handles operations related to orders placed by customers.
+
+This blueprint provides routes for placing orders, viewing orders, changing
+address, providing feedback, cancelling orders, and returning orders.
+"""
 from flask import Blueprint, flash, render_template, request, redirect, session, url_for, abort
 from flask_login import current_user, login_required
 from ourapp import db
@@ -13,6 +19,13 @@ def generate_order_id():
 @order_bp.route("/place")
 @login_required
 def place_order():
+    """
+    Place an order for the items in the user's cart.
+
+    Returns:
+        Renders the acknowledgement template with the total order amount and order details.
+
+    """
     # Ensure the cart is not empty
     # If empty return to products or say no item in the cart
     if len(current_user.cart) <= 0:
@@ -57,6 +70,16 @@ def place_order():
 @order_bp.route('/<status>')
 @login_required
 def view_orders(status):
+    """
+    View orders based on their status.
+
+    Args:
+        status (str): The status of the orders to be viewed.
+
+    Returns:
+        Renders templates based on the status of the orders.
+
+    """
     allowed_status = set(["confirmed", "cancelled", "delivered", "intransit", "returned"])
     if status.lower() not in allowed_status:
         abort(404)
@@ -86,6 +109,16 @@ def view_orders(status):
 @order_bp.route('/<int:order_id>/change_address')
 @login_required
 def change_address(order_id):
+    """
+    Change the shipping address of an order.
+
+    Args:
+        order_id (int): The ID of the order to change the address for.
+
+    Returns:
+        Redirects to the view orders page after changing the address.
+
+    """
     order=Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         new_order_address = request.args.get('address').strip()
@@ -99,6 +132,16 @@ def change_address(order_id):
 @order_bp.route('/<int:order_id>/feedback')
 @login_required
 def get_feedback(order_id):
+    """
+    Provide feedback for a delivered order.
+
+    Args:
+        order_id (int): The ID of the delivered order to provide feedback for.
+
+    Returns:
+        Redirects to the view orders page after providing feedback.
+
+    """
     order=Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         print("ABCD")
@@ -110,6 +153,16 @@ def get_feedback(order_id):
 @order_bp.route('/<int:order_id>/cancel')
 @login_required
 def cancel_order(order_id):
+    """
+    Cancel an order.
+
+    Args:
+        order_id (int): The ID of the order to cancel.
+
+    Returns:
+        Redirects to the view orders page after cancelling the order.
+
+    """
     order=Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         order.status = "cancelled"
@@ -121,6 +174,16 @@ def cancel_order(order_id):
 @order_bp.route('/<int:order_id>/return')
 @login_required
 def return_order(order_id):
+    """
+    Return an order.
+
+    Args:
+        order_id (int): The ID of the order to return.
+
+    Returns:
+        Redirects to the view orders page after returning the order.
+
+    """
     order=Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         order.status = "returned"

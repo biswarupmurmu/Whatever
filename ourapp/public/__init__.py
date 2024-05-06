@@ -8,6 +8,15 @@ from ourapp import db
 public = Blueprint("public", __name__, template_folder="templates", url_prefix="/")
 
 def trending_products_by_category(category_name_to_check):
+    """
+    Get the product in the specified category with the most occurrences in carts.
+
+    Args:
+        category_name_to_check (str): The name of the category to check.
+
+    Returns:
+        None
+    """
     # Query to count the occurrences of each product in the specified category in the CartItem table
     product_count_query = db.session.query(
         CartItem.product_id,
@@ -30,6 +39,12 @@ def trending_products_by_category(category_name_to_check):
     
 
 def get_trending_products():
+    """
+    Get a list of trending products based on the number of occurrences in carts.
+
+    Returns:
+        List: A list of trending Product objects.
+    """
     # Query to select Product objects and count the occurrences of each product in the CartItem table
     product_count_query = db.session.query(
         Product,
@@ -47,6 +62,15 @@ def get_trending_products():
         return []   
 
 def products_by_category(category):
+    """
+    Get products in a specific category.
+
+    Args:
+        category (str): The name of the category.
+
+    Returns:
+        List: A list of Product objects in the specified category.
+    """
     category = Category.query.filter(Category.name.ilike(category)).first()
     if category:
         return category.products.all()
@@ -56,6 +80,12 @@ def products_by_category(category):
 
 @public.route("/")
 def index():
+    """
+    Render the homepage.
+
+    Returns:
+        str: Rendered HTML template for the homepage.
+    """
     latest_products=Product.query.order_by(Product.id.desc()).all()
     trending_products=get_trending_products()
     

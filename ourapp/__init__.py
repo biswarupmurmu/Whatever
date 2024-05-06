@@ -4,6 +4,12 @@ from .models import Customer, Product, Category, Order, OrderedItem, CartItem
 from flask_admin.contrib.sqla import ModelView
 
 def create_app():
+    """
+    Create and configure the Flask application.
+
+    Returns:
+        Flask: The configured Flask application instance.
+    """
     app = Flask(__name__)
     # app.config.from_envvar('OURAPPLICATION_SETTINGS')
     ######################################################

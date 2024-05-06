@@ -7,6 +7,19 @@ payment_bp=Blueprint("payment",__name__,template_folder="templates",url_prefix="
 @payment_bp.route('/', methods=["GET", "POST"])
 @login_required
 def payment():
+    """
+    Render the payment page and handle payment processing.
+
+    If the user is not logged in, they will be redirected to the login page.
+    If the user's cart is empty, they will be redirected to view their cart.
+    If the user does not have an address set, a flash message will inform them and redirect to view their cart.
+    The total price of items in the cart is calculated.
+    If the payment form is submitted and validated, the session variable "payment_received" is set to True,
+    and the user is redirected to place their order.
+
+    Returns:
+        str: Rendered HTML template for the payment page.
+    """
     cart=current_user.cart
     if len(cart) == 0:
         return redirect(url_for("cart.view_cart"))

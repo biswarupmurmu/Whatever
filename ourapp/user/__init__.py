@@ -9,11 +9,23 @@ user_bp = Blueprint("user", __name__, template_folder="templates", url_prefix="/
 @user_bp.route("/profile")
 @login_required
 def view_profile():
+    """
+    Render the user's profile page.
+
+    Returns:
+        str: Rendered HTML template for the user's profile page.
+    """
     return render_template("user/profile.html")
 
 @user_bp.route("/update-address", methods=['POST'])
 @login_required
 def update_address():
+    """
+    Update the user's address.
+
+    Returns:
+        redirect: Redirect to view the user's cart page.
+    """
     current_user.address = request.form['newAddress']
     db.session.commit()
     flash(message="Addredd updated successfully", category="success")
@@ -22,6 +34,12 @@ def update_address():
 @user_bp.route("/update-password", methods=['POST'])
 @login_required
 def update_password():
+    """
+    Update the user's password.
+
+    Returns:
+        redirect: Redirect to view the user's profile page.
+    """
     if request.method == 'POST':
         old_password = request.form['oldPassword']
         new_password = request.form['newPassword']
