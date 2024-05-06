@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from .extensions import db, migrate, login_manager, admin
 from .models import Customer, Product, Category, Order, OrderedItem, CartItem
 from flask_admin.contrib.sqla import ModelView
@@ -10,6 +10,10 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
     app.config['SECRET_KEY'] = "Super secret key"
     ######################################################
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template("error_404.html")
 
     from .auth import auth
     from .public import public
@@ -48,4 +52,5 @@ def create_app():
     admin.add_view(ModelView(Order, db.session))
     admin.add_view(ModelView(OrderedItem, db.session))
     admin.add_view(ModelView(CartItem, db.session))
+    
     return app

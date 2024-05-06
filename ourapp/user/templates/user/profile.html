@@ -1,8 +1,8 @@
 {% extends "base.html" %}
+{% block title %}{{current_user.fname}}{% endblock %}
 
 {% block content %}
 
-{% block title %}Profile{% endblock %}
 <style>
     /* Address Form CSS */
     #editPasswordBtn:checked ~ #editPasswordForm {
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <!-- Profile Picture -->
-            <img src="https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg" alt="Profile Image" class="h-32 w-32 rounded-full">
+            <img src="https://freesvg.org/img/abstract-user-flat-4.png" alt="Profile Image" class="h-32 w-32 rounded-full">
         </div>
 
         <div class="p-6">
@@ -46,9 +46,9 @@
                     <!-- Edit password Form -->
                     <form action="{{ url_for('user.update_password') }}" method="POST">
                         <!-- Form Inputs -->
-                        <input type="text" name="oldPassword" id="oldPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Old Password">
-                        <input type="text" name="newPassword" id="newPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter New Password">
-                        <input type="text" name="confirmPassword" id="confirmPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Confirm Password">
+                        <input type="password" name="oldPassword" id="oldPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Old Password">
+                        <input type="password" name="newPassword" id="newPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter New Password">
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="border rounded-md p-2 mt-2 w-full" placeholder="Enter Confirm Password">
                         <!-- Submit Button -->
                         <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Submit</button>
                         <a href="{{url_for('user.view_profile')}}" id="cancel-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">Cancel</a>

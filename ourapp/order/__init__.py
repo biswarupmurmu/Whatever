@@ -1,10 +1,14 @@
-from flask import Blueprint, flash, render_template, request, redirect, session, url_for
+from flask import Blueprint, flash, render_template, request, redirect, session, url_for, abort
 from flask_login import current_user, login_required
 from ourapp import db
 from ourapp.models import CartItem, Product, Order, OrderedItem
 from datetime import datetime, timedelta
+from random import randint
 
 order_bp=Blueprint("order_bp",__name__, template_folder="templates",url_prefix="/order")
+
+def generate_order_id():
+    return randint(10**6,(10**7)-1)
 
 @order_bp.route("/place")
 @login_required
@@ -24,7 +28,16 @@ def place_order():
 
     customer_id=current_user.id
     arriving_date=datetime.now()+timedelta(days=7)
-    new_order=Order(customer_id=customer_id, arriving_date=arriving_date, address=current_user.address)
+    while True:
+        order_id=generate_order_id()
+        if not Order.query.filter_by(id=order_id).first():
+            break
+    new_order=Order(
+        id=order_id,
+        customer_id=customer_id,
+        arriving_date=arriving_date,
+        address=current_user.address
+        )
     db.session.add(new_order)
     db.session.commit()
     print(new_order)
@@ -37,15 +50,17 @@ def place_order():
         db.session.add(new_orderedItem)
     CartItem.query.filter_by(customer_id=customer_id).delete() # Clearing the user's cart
     db.session.commit()
-    flash(message=f"Order placed successfully", category="success")
+    flash(message=f"{new_order.id}", category="order_placed_success")
             
-    return redirect(url_for("public.index"))
+    return redirect(url_for('order_bp.view_orders', status='confirmed'))
 
 @order_bp.route('/<status>')
 @login_required
 def view_orders(status):
+    allowed_status = set(["confirmed", "cancelled", "delivered", "intransit", "returned"])
+    if status.lower() not in allowed_status:
+        abort(404)
     orders=current_user.orders
-    
     orders_by_status = []
     for order in orders:
         if order.status.lower() == status.lower():
@@ -73,8 +88,12 @@ def view_orders(status):
 def change_address(order_id):
     order=Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
-        order.address = request.args.get('address')
-        db.session.commit()
+        new_order_address = request.args.get('address').strip()
+        if len(new_order_address) == 0:
+            flash(message="Address cannot be empty", category="info")
+        else:
+            order.address = new_order_address
+            db.session.commit()
     return redirect(url_for('order_bp.view_orders', status='confirmed'))
 
 @order_bp.route('/<int:order_id>/feedback')
@@ -96,6 +115,7 @@ def cancel_order(order_id):
         order.status = "cancelled"
         order.date_according_to_status = datetime.now()
         db.session.commit()
+        flash(message="Order cancelled", category="success")
     return redirect(url_for('order_bp.view_orders', status='cancelled'))
 
 @order_bp.route('/<int:order_id>/return')
@@ -106,4 +126,6 @@ def return_order(order_id):
         order.status = "returned"
         order.date_according_to_status = datetime.now()
         db.session.commit()
+        flash(message="Return requested", category="success")
+
     return redirect(url_for('order_bp.view_orders', status='returned'))

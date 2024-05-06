@@ -1,21 +1,42 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
 	<p hidden id="flash-category">{{category}}</p>
 	<p hidden id="flash-message">{{message}}</p>
 	  <script>
-		let category = document.getElementById("flash-category").innerHTML
-		let message = document.getElementById("flash-message").innerHTML
-		let title = [...category][0].toUpperCase() + [...category].slice(1).join('');
+		var category = document.getElementById("flash-category").innerHTML
+		var message = document.getElementById("flash-message").innerHTML
+		var title = [...category][0].toUpperCase() + [...category].slice(1).join('');
 		if(category == "message"){
 			category = "info"
 		}
-	  	Swal.fire({
-		title: `${title}`,
-		text: `${message}`,
-		icon: `${category}`,
-		});
+
+		if (category == "order_placed_success"){
+			Swal.fire({
+			title: "Order placed successfully!",
+			text: `Order id ${message}`,
+			icon: "success",
+			});
+		}
+		else if (category == "user_registered_success"){
+			var message = message.split(" ")
+			Swal.fire({
+			title: `Welcome ${message[0]}!`,
+			text: `Your ID ${message[1]}`,
+			icon: "success",
+			});
+		}
+		else{
+			Swal.fire({
+			title: `${title}`,
+			text: `${message}`,
+			icon: `${category}`,
+			});
+		}
+
+
 	  </script>
     {% endfor %}
   {% endif %}

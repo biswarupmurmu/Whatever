@@ -100,8 +100,8 @@
       }
       .slick-prev,
       .slick-next {
-        color: #000;
-        background-color: #fff;
+        color: #fff ;
+        background-color:#000;
         border: 2px solid #000;
         border-radius: 50%;
         width: 30px;
@@ -144,7 +144,7 @@
       }
 
       .card {
-        width: 300px;
+        /* width: 300px; */
         margin: 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
         border-radius: 10px;
@@ -153,7 +153,7 @@
         display: flex;
         flex-direction: column;
         height: auto;
-        max-height: 450px;
+        /* max-height: 450px; */
         border-top: 1.5px solid rgba(128, 128, 128, 0.3);
         border-left: 1.5px solid rgba(128, 128, 128, 0.3);
         border-right: 1.5px solid rgba(128, 128, 128, 0.3);
@@ -204,7 +204,7 @@
       
       <!-- Product Carousel -->
       <section id="product-carousel" class="section">
-        
+        <h1 class="py-2" style="font-size:1.8rem">Latest Arrivals</h1>
         <div class="carousel">
           {% for product in latest_products[:6] %}
           <div>

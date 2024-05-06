@@ -1,8 +1,8 @@
 {% extends "base.html" %}
+{% block title %}Orders{% endblock %}
 
 {% block content %}
 
-{% block title %}Orders{% endblock %}
 
 <script src="https://cdn.tailwindcss.com"></script>
  <!-- Main Content -->
@@ -26,7 +26,7 @@
         </thead>
         <tbody>
             <!-- Confirmed Orders data here -->
-            {% for i in orders%}
+      {% for i in orders%}
 			{% set order = i[0] %}
 			{% set items = i[1] %}
 			{% set order_total = i[2] %}
@@ -47,15 +47,13 @@
 				<td class="border border-gray-200 px-4 py-2 text-center">{{order_total}}</td>
 				<td class="border border-gray-200 px-4 py-2 text-center">{{order.address}}</td>
 
-                <td class="border border-gray-200 px-4 py-2 text-center"><button id="{{order.id}}" onclick="openPopup(this)" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Change Address</button></td>
+                <td class="border border-gray-200 px-4 py-2 text-center"><button id="{{order.id}}" address="{{order.address}}" onclick="openPopup(this)" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md mt-2">Change Address</button></td>
                 <td class="border border-gray-200 px-4 py-2 text-center"><a href="{{url_for('order_bp.cancel_order', order_id=order.id)}}" class="text-red-500">Cancel</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-
-        
 
     </div>
 
@@ -83,11 +81,13 @@
   // Function to open the pop-up
   function openPopup(element) {
     let order_id = element.getAttribute("id")
+    let order_address = element.getAttribute("address")
     let changeAddressForm = document.getElementById("changeAddressForm")
 
     let action_url = `/order/${order_id}/change_address`
     console.log(action_url)
     changeAddressForm.setAttribute("action", action_url)
+    changeAddressForm.address.setAttribute("value", order_address)
 
     document.getElementById('overlay').classList.remove('hidden');
     document.getElementById('popup').classList.remove('hidden');

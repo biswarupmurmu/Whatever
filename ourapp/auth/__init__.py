@@ -8,6 +8,7 @@ from ourapp.models import Customer
 from ourapp import db
 from ourapp import login_manager
 from .form import LoginForm, SignupForm
+from random import randint
 
 auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
 
@@ -33,7 +34,8 @@ def login():
     return render_template('auth/login.html', form=form)
 
 
-
+def generate_customer_id():
+    return randint(10**6,(10**7)-1)
 
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -53,7 +55,13 @@ def signup():
             if email_exists:
                 form.email.errors = ["Email already in use."]
             else:
+                while True:
+                    customer_id = generate_customer_id()
+                    if not Customer.query.filter_by(id=customer_id).first():
+                        break
+
                 user = Customer(
+                    id = customer_id,
                     fname=fname,
                     lname=lname,
                     email=email,
@@ -61,7 +69,7 @@ def signup():
                 )
                 db.session.add(user)
                 db.session.commit()
-                flash(message="Account created successfully!", category="success")
+                flash(message=f"{user.fname} {user.id}", category="user_registered_success")
                 return redirect(url_for("auth.login"))
     return render_template("auth/signup.html", form=form)
 
