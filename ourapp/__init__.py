@@ -45,12 +45,12 @@ def create_app():
 
     # Add views for each model
     # I dont know how it works, but it works
-    Category()
-    admin.add_view(ModelView(Customer, db.session))
-    admin.add_view(ModelView(Product, db.session))
-    admin.add_view(ModelView(Category, db.session))
-    admin.add_view(ModelView(Order, db.session))
-    admin.add_view(ModelView(OrderedItem, db.session))
-    admin.add_view(ModelView(CartItem, db.session))
+    # Category()
+    # admin.add_view(ModelView(Customer, db.session))
+    # admin.add_view(ModelView(Product, db.session))
+    # admin.add_view(ModelView(Category, db.session))
+    # admin.add_view(ModelView(Order, db.session))
+    # admin.add_view(ModelView(OrderedItem, db.session))
+    # admin.add_view(ModelView(CartItem, db.session))
     
     return app
