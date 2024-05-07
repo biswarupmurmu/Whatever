@@ -70,16 +70,16 @@ Products - {{category}}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {% for product in products %}
         <div class="card">
-            <a href="{{ url_for('product_bp.view_product_details', id=product.id) }}">
+            <a href="{{ url_for('product_bp.view_product_details', product_id=product.id) }}">
                 <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-auto">
             </a>
             <div class="card-body">
-                <a href="{{ url_for('product_bp.view_product_details', id=product.id) }}" class="block text-gray-800 font-semibold card-title">{{ product.name }}</a>
+                <a href="{{ url_for('product_bp.view_product_details', product_id=product.id) }}" class="block text-gray-800 font-semibold card-title">{{ product.name }}</a>
                 <p class="text-gray-600 card-desc">{{ product.small_description }}</p>
                 
                 <div class="mt-auto flex justify-between items-center">
                     <span class="text-gray-800 font-bold card-price">₹ {{ product.price }}</span>
-                    <a href="{{ url_for('cart.add_to_cart', id=product.id) }}" class="py-1 px-3 bg-blue-500 text-white rounded hover:bg-blue-600">Add to Cart</a>
+                    <a href="{{ url_for('cart.add_to_cart', product_id=product.id) }}" class="py-1 px-3 bg-blue-500 text-white rounded hover:bg-blue-600">Add to Cart</a>
                 </div>
             </div>
         </div>

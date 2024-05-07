@@ -1,4 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Error{% endblock %}
+
+{% block content %}
 <center>
-    <h1>Are you lost?!</h1>
-<h1>Go to <a href="{{url_for('public.index')}}">home</a></h1>
+    <div class="p-10">
+        <center>
+            <h1 class="text-xl font-bold text-gray-600">Error 404 : Page not found.</h1>
+            <h1 class="text-xl font-bold">Go to <a class="text-blue-500" href="{{url_for('public.index')}}">home</a> to Shop.</h1>
+        </center>
+    </div>
 </center>
+{% endblock %}

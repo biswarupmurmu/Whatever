@@ -4,23 +4,20 @@ This module handles the user authentication for our application.
 This module provides routes for user login, signup, and logout functionalities.
 """
 
-
-from ourapp.logging_config.config import logger
+from random import randint
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user
+from ourapp.extensions import db, login_manager
 from ourapp.models import Customer
-from ourapp import db
-from ourapp import login_manager
+from ourapp.logging_config.config import logger
 from .form import LoginForm, SignupForm
-from random import randint
-
 
 
 auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route("/login", methods=["GET", "POST"])
 def login():
     """
     Handle user login.
@@ -38,21 +35,28 @@ def login():
             user = Customer.query.filter_by(email=email).first()
             if not user:
                 form.email.errors = ["Email not registered."]
-                logger.warning("Attempted login with unregistered email: %s", email)
+                logger.warning("Attempted login with unregistered email: %s", email
+                )
             elif not check_password_hash(user.password, password):
                 form.password.errors = ["Wrong password entered."]
-                logger.warning("Attempted login with incorrect password for email: %s", email)
+                logger.warning(
+                    "Attempted login with incorrect password for email: %s", email
+                )
             elif user and check_password_hash(user.password, password):
                 login_user(user)
-                requested_next_route = request.args.get('next')
+                requested_next_route = request.args.get("next")
                 flash("Login successful", category="success")
                 logger.info("User logged in successfully: %s", email)
-                return redirect(requested_next_route or url_for('public.index'))
-    return render_template('auth/login.html', form=form)
+                return redirect(requested_next_route or url_for("public.index"))
+    return render_template("auth/login.html", form=form)
 
 
 def generate_customer_id():
-    return randint(10**6,(10**7)-1)
+    """
+    Generates random customer id
+    """
+    return randint(10**6, (10**7) - 1)
+
 
 @auth.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -75,7 +79,9 @@ def signup():
             email_exists = Customer.query.filter_by(email=email).first()
             if email_exists:
                 form.email.errors = ["Email already in use."]
-                logger.warning("Attempted signup with existing email: %s", email)
+                logger.warning(
+                    "Attempted signup with existing email: %s", 
+                    email)
             else:
                 while True:
                     customer_id = generate_customer_id()
@@ -83,7 +89,7 @@ def signup():
                         break
 
                 user = Customer(
-                    id = customer_id,
+                    id=customer_id,
                     fname=fname,
                     lname=lname,
                     email=email,
@@ -91,7 +97,10 @@ def signup():
                 )
                 db.session.add(user)
                 db.session.commit()
-                flash(message=f"{user.fname} {user.id}", category="user_registered_success")
+                flash(
+                    message=f"{user.fname} {user.id}",
+                    category="user_registered_success",
+                )
                 logger.info("New account created: %s", email)
                 return redirect(url_for("auth.login"))
     return render_template("auth/signup.html", form=form)
@@ -106,8 +115,8 @@ def logout():
     Logs out the currently logged-in user and redirects to the homepage.
     """
     logout_user()
-    flash('Logout Successful!','success')
-    logger.info("Logout Successful for Customer" )
+    flash("Logout Successful!", "success")
+    logger.info("Logout Successful for Customer")
     return redirect(url_for("public.index"))
 
 

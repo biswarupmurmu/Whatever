@@ -1,14 +1,17 @@
 """
-This module provides functionality for validating payment credentials and includes a PaymentForm class.
+This module provides functionality for validating payment
+credentials and includes a PaymentForm class.
 
 Functions:
     numbers_only: Validates that the input contains only numbers.
     alphabets_only: Validates that the input contains only alphabets.
-    validate_expiry: Validates the expiry date format and checks if the card is expired.
+    validate_expiry: Validates the expiry date format and checks if the
+    card is expired.
 
 Classes:
-    PaymentForm: Inherits from FlaskForm and provides fields for card number, cardholder's name,
-        expiry date, and CVV with corresponding validators.
+    PaymentForm: Inherits from FlaskForm and provides fields for
+    card number, cardholder's name,
+    expiry date, and CVV with corresponding validators.
 """
 
 from datetime import datetime
@@ -17,7 +20,7 @@ from wtforms import StringField
 from wtforms.validators import InputRequired, ValidationError, length
 
 
-def numbers_only(form, field):
+def numbers_only(*args):
     """
     Validate that the input contains only numbers.
 
@@ -28,11 +31,13 @@ def numbers_only(form, field):
     Raises:
         ValidationError: If the input contains non-numeric characters.
     """
-    if not str(field.data).isdigit():
-        raise ValidationError('Only numbers allowed')
+    field_data = args[1].data
+    if not str(field_data).isdigit():
+        raise ValidationError("Only numbers allowed")
     return True
 
-def alphabets_only(form, field):
+
+def alphabets_only(*args):
     """
     Validate that the input contains only alphabets.
 
@@ -43,11 +48,13 @@ def alphabets_only(form, field):
     Raises:
         ValidationError: If the input contains non-alphabetic characters.
     """
-    if not str(field.data).isalpha():
-        raise ValidationError('Only alphabets allowed')
+    field_data = args[1].data
+    if not str(field_data).isalpha():
+        raise ValidationError("Only alphabets allowed")
     return True
 
-def validate_expiry(form, field):
+
+def validate_expiry(*args):
     """
     Validate the expiry date format and check if the card is expired.
 
@@ -56,34 +63,48 @@ def validate_expiry(form, field):
         field (str): The expiry date field to validate.
 
     Raises:
-        ValidationError: If the expiry date is not in MMYYYY format or if the card is expired.
+        ValidationError: If the expiry date is not in MMYYYY format 
+        or if the card is expired.
     """
-    if not str(field.data).isdigit():
+    field_data = args[1].data
+    if not str(field_data).isdigit():
         raise ValidationError("Invalid input")
-    m = int(field.data[:2])
-    y = int(field.data[2:6])
+    m = int(field_data[:2])
+    y = int(field_data[2:6])
 
-    if m > 12 or m <=0:
+    if m > 12 or m <= 0:
         raise ValidationError("Invalid month")
 
     if datetime.now() > datetime(y, m, 1):
         raise ValidationError("Card expired")
+
 
 class PaymentForm(FlaskForm):
     """
     A form for validating payment credentials.
 
     Attributes:
-        card_no (StringField): Field for the card number with validators for length and numeric input.
-        name (StringField): Field for the cardholder's name with validators for alphabetic input.
-        expiry_date (StringField): Field for the expiry date in MMYYYY format with validators for length,
+        card_no (StringField): Field for the card number with
+         validators for length and numeric input.
+        name (StringField): Field for the cardholder's name 
+        with validators for alphabetic input.
+        expiry_date (StringField): Field for the expiry date in 
+        MMYYYY format with validators for length,
             format, and expiry check.
-        cvv (StringField): Field for the CVV with validators for length and numeric input.
+        cvv (StringField): Field for the CVV with validators for 
+        length and numeric input.
     """
+
     card_no = StringField(
         "Card no", validators=[InputRequired(), length(min=16, max=16), numbers_only]
     )
-    name = StringField("Card holders name", validators=[InputRequired(), alphabets_only])
-    expiry_date = StringField("Expiry(MMYYYY)" , validators=[InputRequired(), length(min=6,max=6), validate_expiry])
-    cvv = StringField("CVV", validators=[InputRequired(), length(min=3, max=3), numbers_only])
-
+    name = StringField(
+        "Card holders name", validators=[InputRequired(), alphabets_only]
+    )
+    expiry_date = StringField(
+        "Expiry(MMYYYY)",
+        validators=[InputRequired(), length(min=6, max=6), validate_expiry],
+    )
+    cvv = StringField(
+        "CVV", validators=[InputRequired(), length(min=3, max=3), numbers_only]
+    )

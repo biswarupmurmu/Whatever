@@ -4,18 +4,35 @@ This blueprint handles operations related to orders placed by customers.
 This blueprint provides routes for placing orders, viewing orders, changing
 address, providing feedback, cancelling orders, and returning orders.
 """
-from flask import Blueprint, flash, render_template, request, redirect, session, url_for, abort
-from flask_login import current_user, login_required
-from ourapp import db
-from ourapp.models import CartItem, Product, Order, OrderedItem
-from datetime import datetime, timedelta
-from random import randint
-from ourapp.logging_config.config import logger
 
-order_bp=Blueprint("order_bp",__name__, template_folder="templates",url_prefix="/order")
+from random import randint
+from datetime import datetime, timedelta
+from flask import (
+    Blueprint,
+    flash,
+    render_template,
+    request,
+    redirect,
+    session,
+    url_for,
+    abort,
+)
+from flask_login import current_user, login_required
+from ourapp.logging_config.config import logger
+from ourapp.extensions import db
+from ourapp.models import CartItem, Product, Order, OrderedItem
+
+order_bp = Blueprint(
+    "order_bp", __name__, template_folder="templates", url_prefix="/order"
+)
+
 
 def generate_order_id():
-    return randint(10**6,(10**7)-1)
+    """
+    generates a order id
+    """
+    return randint(10**6, (10**7) - 1)
+
 
 @order_bp.route("/place")
 @login_required
@@ -40,36 +57,46 @@ def place_order():
     # Removing payment status
     session.pop("payment_received")
 
-    customer_id=current_user.id
-    arriving_date=datetime.now()+timedelta(days=7)
+    customer_id = current_user.id
+    arriving_date = datetime.now() + timedelta(days=7)
     while True:
-        order_id=generate_order_id()
+        order_id = generate_order_id()
         if not Order.query.filter_by(id=order_id).first():
             break
-    new_order=Order(
+    new_order = Order(
         id=order_id,
         customer_id=customer_id,
         arriving_date=arriving_date,
-        address=current_user.address
-        )
+        address=current_user.address,
+    )
     db.session.add(new_order)
     db.session.commit()
     print(new_order)
-    for cartItem in current_user.cart:
-        order_id=new_order.id
-        product_id=cartItem.product.id
-        quantity=cartItem.quantity
-        price = cartItem.product.price
-        new_orderedItem=OrderedItem(order_id=order_id, product_id=product_id, quantity=quantity, price=price)
-        db.session.add(new_orderedItem)
-        logger.info("Order placed successfully for Customer %s(%s) Order ID: %s",current_user.fname, current_user.id, new_order.id)
-    CartItem.query.filter_by(customer_id=customer_id).delete() # Clearing the user's cart
+    for cartitem in current_user.cart:
+        order_id = new_order.id
+        product_id = cartitem.product.id
+        quantity = cartitem.quantity
+        price = cartitem.product.price
+        new_ordereditem = OrderedItem(
+            order_id=order_id, product_id=product_id, quantity=quantity, price=price
+        )
+        db.session.add(new_ordereditem)
+        logger.info(
+            "Order placed successfully for Customer %s(%s) Order ID: %s",
+            current_user.fname,
+            current_user.id,
+            new_order.id,
+        )
+    CartItem.query.filter_by(
+        customer_id=customer_id
+    ).delete()  # Clearing the user's cart
     db.session.commit()
     flash(message=f"{new_order.id}", category="order_placed_success")
-            
-    return redirect(url_for('order_bp.view_orders', status='confirmed'))
 
-@order_bp.route('/<status>')
+    return redirect(url_for("order_bp.view_orders", status="confirmed"))
+
+
+@order_bp.route("/<status>")
 @login_required
 def view_orders(status):
     """
@@ -82,34 +109,49 @@ def view_orders(status):
         Renders templates based on the status of the orders.
 
     """
-    allowed_status = set(["confirmed", "cancelled", "delivered", "intransit", "returned"])
+    allowed_status = set(
+        ["confirmed", "cancelled", "delivered", "intransit", "returned"]
+    )
     if status.lower() not in allowed_status:
         abort(404)
-    orders=current_user.orders
+    orders = current_user.orders
     orders_by_status = []
     for order in orders:
         if order.status.lower() == status.lower():
             total = 0
             items = set()
             for ordered_item in order.ordered_items:
-                total += (ordered_item.price * ordered_item.quantity)
+                total += ordered_item.price * ordered_item.quantity
                 items.add(ordered_item.product.name)
-            orders_by_status.append([order,list(items), total])
-    logger.info("Customer %s(%s) Viewing orders with status: %s",current_user.fname,current_user.id, status.lower())
+            orders_by_status.append([order, list(items), total])
+    logger.info(
+        "Customer %s(%s) Viewing orders with status: %s",
+        current_user.fname,
+        current_user.id,
+        status.lower(),
+    )
     if status == "cancelled":
-        return render_template("order/cancelled.html",orders=orders_by_status ,status=status.lower())
-    elif status == "delivered":
-        return render_template("order/delivered.html",orders=orders_by_status ,status=status.lower())
-    elif status == "returned":
-        return render_template("order/returned.html",orders=orders_by_status ,status=status.lower())
-    elif status == "intransit":
-        return render_template("order/intransit.html",orders=orders_by_status ,status=status.lower())
+        return render_template(
+            "order/cancelled.html", orders=orders_by_status, status=status.lower()
+        )
+    if status == "delivered":
+        return render_template(
+            "order/delivered.html", orders=orders_by_status, status=status.lower()
+        )
+    if status == "returned":
+        return render_template(
+            "order/returned.html", orders=orders_by_status, status=status.lower()
+        )
+    if status == "intransit":
+        return render_template(
+            "order/intransit.html", orders=orders_by_status, status=status.lower()
+        )
+    return render_template(
+        "order/confirmed.html", orders=orders_by_status, status=status.lower()
+    )
 
 
-    return render_template("order/confirmed.html",orders=orders_by_status ,status=status.lower())
-
-
-@order_bp.route('/<int:order_id>/change_address')
+@order_bp.route("/<int:order_id>/change_address")
 @login_required
 def change_address(order_id):
     """
@@ -122,19 +164,26 @@ def change_address(order_id):
         Redirects to the view orders page after changing the address.
 
     """
-    order=Order.query.filter_by(id=order_id).first()
+    order = Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
-        new_order_address = request.args.get('address').strip()
+        new_order_address = request.args.get("address").strip()
         if len(new_order_address) == 0:
             flash(message="Address cannot be empty", category="info")
         else:
             order.address = new_order_address
             db.session.commit()
-            logger.info("Address updated for customer %s(%s) for order %s. New address: %s",current_user.fname,current_user.id,  order.id, new_order_address)
-            flash(message="Address updated successfully",category='success')
-    return redirect(url_for('order_bp.view_orders', status='confirmed'))
+            logger.info(
+                "Address updated for customer %s(%s) for order %s. New address: %s",
+                current_user.fname,
+                current_user.id,
+                order.id,
+                new_order_address,
+            )
+            flash(message="Address updated successfully", category="success")
+    return redirect(url_for("order_bp.view_orders", status="confirmed"))
 
-@order_bp.route('/<int:order_id>/feedback')
+
+@order_bp.route("/<int:order_id>/feedback")
 @login_required
 def get_feedback(order_id):
     """
@@ -147,16 +196,23 @@ def get_feedback(order_id):
         Redirects to the view orders page after providing feedback.
 
     """
-    order=Order.query.filter_by(id=order_id).first()
+    order = Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         print("ABCD")
-        order.feedback = request.args.get('feedback')
+        order.feedback = request.args.get("feedback")
         print(order.feedback)
         db.session.commit()
-        logger.info("Feedback added by Customer %s(%s) for order %s. Feedback: %s",current_user.fname, current_user.id, order.id, order.feedback)
-    return redirect(url_for('order_bp.view_orders', status='delivered'))
+        logger.info(
+            "Feedback added by Customer %s(%s) for order %s. Feedback: %s",
+            current_user.fname,
+            current_user.id,
+            order.id,
+            order.feedback,
+        )
+    return redirect(url_for("order_bp.view_orders", status="delivered"))
 
-@order_bp.route('/<int:order_id>/cancel')
+
+@order_bp.route("/<int:order_id>/cancel")
 @login_required
 def cancel_order(order_id):
     """
@@ -169,16 +225,22 @@ def cancel_order(order_id):
         Redirects to the view orders page after cancelling the order.
 
     """
-    order=Order.query.filter_by(id=order_id).first()
+    order = Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         order.status = "cancelled"
         order.date_according_to_status = datetime.now()
         db.session.commit()
         flash(message="Order cancelled", category="success")
-        logger.info("Order Cancelled successfully for Customer %s(%s) Order ID: %s",current_user.fname, current_user.id, order_id)
-    return redirect(url_for('order_bp.view_orders', status='cancelled'))
+        logger.info(
+            "Order Cancelled successfully for Customer %s(%s) Order ID: %s",
+            current_user.fname,
+            current_user.id,
+            order_id,
+        )
+    return redirect(url_for("order_bp.view_orders", status="cancelled"))
 
-@order_bp.route('/<int:order_id>/return')
+
+@order_bp.route("/<int:order_id>/return")
 @login_required
 def return_order(order_id):
     """
@@ -191,11 +253,16 @@ def return_order(order_id):
         Redirects to the view orders page after returning the order.
 
     """
-    order=Order.query.filter_by(id=order_id).first()
+    order = Order.query.filter_by(id=order_id).first()
     if order and order.customer_id == current_user.id:
         order.status = "returned"
         order.date_according_to_status = datetime.now()
         db.session.commit()
         flash(message="Return requested", category="success")
-        logger.info("Return requested for order %s by user %s(%ss)", order.id,current_user.fname, current_user.id)
-    return redirect(url_for('order_bp.view_orders', status='returned'))
+        logger.info(
+            "Return requested for order %s by user %s(%ss)",
+            order.id,
+            current_user.fname,
+            current_user.id,
+        )
+    return redirect(url_for("order_bp.view_orders", status="returned"))

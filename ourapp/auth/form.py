@@ -69,6 +69,7 @@ class LoginForm(FlaskForm):
 
     def process_data(self):
         '''
-        Process form data by converting email to lowercase and stripping leading and trailing spaces.
+        Process form data by converting email to lowercase and stripping
+        leading and trailing spaces.
         '''
         self.email.data = self.email.data.strip().lower()

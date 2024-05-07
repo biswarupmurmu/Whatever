@@ -208,7 +208,7 @@
         <div class="carousel">
           {% for product in latest_products[:6] %}
           <div>
-            <a href="{{url_for('product_bp.view_product_details', id=product.id)}}"
+            <a href="{{url_for('product_bp.view_product_details', product_id=product.id)}}"
               ><img
                 src="{{product.image_url}}"
                 alt="{{product.name}}"

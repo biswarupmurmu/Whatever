@@ -17,7 +17,6 @@
                 <th class="border border-gray-200 px-4 py-2">Order Id</th>
                 <th class="border border-gray-200 px-4 py-2">Ordered Item</th>
                 <th class="border border-gray-200 px-4 py-2">Ordered Date</th>
-                <th class="border border-gray-200 px-4 py-2">Arriving Date</th>
                 <th class="border border-gray-200 px-4 py-2">Amount</th>
                 <th class="border border-gray-200 px-4 py-2">Address</th>
                 <th class="border border-gray-200 px-4 py-2">Feedback</th>
@@ -43,7 +42,6 @@
 					{% endfor %}
 				</td>
                 <td class="border border-gray-200 px-4 py-2 text-center">{{order.ordered_date.strftime('%Y-%m-%d')}}</td>
-                <td class="border border-gray-200 px-4 py-2 text-center">{{order.arriving_date.strftime('%Y-%m-%d')}}</td>
 				        <td class="border border-gray-200 px-4 py-2 text-center">{{order_total}}</td>
 				        <td class="border border-gray-200 px-4 py-2 text-center">{{order.address}}</td>
                 {% if order.feedback %}

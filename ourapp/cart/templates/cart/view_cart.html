@@ -24,11 +24,11 @@
                 <p class="text-gray-600 mb-4">₹ {{ product.price }}</p>
                 <div class="flex items-center">
                     <div class="quantity flex items-center">
-                        <a href="{{ url_for('cart.decrement', id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">-</a>
+                        <a href="{{ url_for('cart.decrement', product_id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">-</a>
                         <span id="quantity_{{ product.id }}" class="px-3 py-1 bg-gray-200">{{ quantity }}</span>
-                        <a href="{{ url_for('cart.increment', id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">+</a>
+                        <a href="{{ url_for('cart.increment', product_id=product.id) }}" class="px-3 py-1 rounded bg-gray-200 inline-block">+</a>
                     </div>
-                    <a href="{{ url_for('cart.remove', id=product.id) }}" class="text-red-500 font-semibold ml-4">Remove</a>
+                    <a href="{{ url_for('cart.remove', product_id=product.id) }}" class="text-red-500 font-semibold ml-4">Remove</a>
                 </div>
             </div>
         </div>
